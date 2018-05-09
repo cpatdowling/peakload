@@ -1,0 +1,4 @@
+*.pyc
+stock-rnn
+docs
+data
