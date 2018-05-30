@@ -26,7 +26,7 @@ class nnet(nn.Module):
         x = F.sigmoid(self.l1(x))
         x = F.tanh(self.l2(x))
         x = F.sigmoid(self.l3(x))
-        x = F.logsigmoid(self.l4(x))
+        x = F.tanh(self.l4(x))
         x = F.sigmoid(self.l5(x))
         x = F.tanh(self.l6(x))
         x = self.l7(x)

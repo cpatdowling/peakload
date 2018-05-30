@@ -49,7 +49,7 @@ def train(net_obj, loss_fnc, opt_fnc, traindata, valdata, batchsize=100, epochs=
         
         print("==epoch " + str(epoch) + "==")
         train_samp = random.randint(0,num_batches)
-        train_set_loss = set_loss(net_obj, train_batches[train_samp])
+        train_set_loss = set_loss(net_obj, train_batches[train_samp-1])
         train_epoch_set_loss.append(train_set_loss)
         print("training set sampled loss: " + str(train_set_loss))
         val_set_loss = set_loss(net_obj, valdata)
@@ -70,7 +70,6 @@ def train(net_obj, loss_fnc, opt_fnc, traindata, valdata, batchsize=100, epochs=
     
 
 if __name__ == "__main__":
-    batch_size = 100 #batch size
     random.seed(45) #fixed for all experiments, my high school football jersey number
     torch.manual_seed(45)
     
@@ -114,6 +113,8 @@ if __name__ == "__main__":
     print("Feature dimension: " + str(params['FEATURE_DIM']))
     params['OUTPUT_DIM'] = len(normed_test_data_pairs[1][1]) #vector length
     print("Output dimension: " + str(params['OUTPUT_DIM']))
+    
+    batch_size = params['BATCH_SIZE'] #batch size
 
     #shuffle training/test data pairs, split out validation
     random.shuffle(normed_training_data_pairs)
@@ -145,13 +146,13 @@ if __name__ == "__main__":
     print_model_scores(test_model_scores, "test data scores")
     
     
-    #use filename and architectural parameters for save file name
-    id_ = str(random.randint(1000,9999))
-    torch.save(net, "/home/chase/projects/peakload/data/nets/models/" + model_ident + "_" + "_".join(arch) + "_" + id_ + ".pt")
-    if not os.path.exists("/home/chase/projects/peakload/data/nets/" + model_ident + "_" + "_".join(arch) + "_stats"):
-        os.mkdir("/home/chase/projects/peakload/data/nets/reports/" + model_ident + "_" + "_".join(arch) + "_stats")
+    #use model_ident for save file name
+    torch.save(net, "/home/chase/projects/peakload/data/nets/models/" + model_ident +  ".pt")
         
-    with open("/home/chase/projects/peakload/data/nets/reports/" + model_ident + "_" + "_".join(arch) + "_stats/train_test_scores_" + id_ + ".pck", 'wb') as p:
+    with open("/home/chase/projects/peakload/data/nets/reports/model_registry.txt", 'a') as f:
+        f.write(model_ident + "," + train_data_path.split("/")[0] + "," + ",".join(arch) + "\n")
+        
+    with open("/home/chase/projects/peakload/data/nets/reports/" + model_ident + "_train_test_scores_.pck", 'wb') as p:
         pickle.dump(scores, p)
 
 
