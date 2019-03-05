@@ -137,7 +137,7 @@ if __name__ == "__main__":
         criterion = nn.L1Loss()
     elif params['LOSS'] == "EW":
         criterion = expw_mae_loss #import from utils
-    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9) #0.001 before switch to 1.0 - alpha^{F(x)}
     
     scores = train(net, criterion, optimizer, training_pairs, val_pairs, epochs=params['EPOCHS'])
     

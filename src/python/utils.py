@@ -23,7 +23,7 @@ def expw_mae_loss_(output, target, base=10.0):
 
 def expw_mae_loss(output, target, base=10.0):
     base = Variable(torch.Tensor([base])).type_as(target)
-    return(( (output - target).abs() * torch.pow(base, target) ).sum() / output.data.nelement() )
+    return(( (output - target).abs() * (torch.pow(base, target)) ).sum() / output.data.nelement() )
 
 def batch_sample_list(datalist, batchsize):
     #list of training, target pair tuples
