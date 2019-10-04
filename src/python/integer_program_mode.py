@@ -34,19 +34,18 @@ print("\n")
 
 #selection = cvx.Variable((5,5),boolean=True)
 selection = cvx.Variable((1,5),boolean=True)
-max_val = cvx.Variable(num_samps)
+max_val = cvx.Variable(1)
 
 constraint_1 = sum(sum(selection)) <= N #selection*np.array([budget for i in range(5)]) <= budget
 
-constraints = []
-for i in range(num_samps):
-    for j in range(5):
-        constraints.append(samples[i,j] <= max_val[i] - budget_val*selection[0,j])
+#Y = sum(samples - budget*selection)
 
-utility = sum(max_val - budget*selection) #need to repeat selection so that all 2000
-                                          #max val terms get every j'th item reduced by budget
+constraint_2 = samples - budget*selection <= max_val
 
-problem = cvx.Problem(cvx.Minimize(utility), [constraint_1] + constraints)
+
+utility = max_val
+
+problem = cvx.Problem(cvx.Minimize(utility), [constraint_1, constraint_2])
 
 problem.solve()
 

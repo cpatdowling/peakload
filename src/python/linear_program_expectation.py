@@ -13,7 +13,7 @@ budget_val = 1
 means = np.array([1,1,1,1,1])
 variances = np.array([10.0, 2.0, 1.0, 1.0, 1.0])
 
-N = 2 #number of signals
+N = 3 #total signal budget
 
 for i in range(num_samps):
     samp = np.random.normal(means, variances, size=(5,))
@@ -34,10 +34,11 @@ print("Max Var reduced max: ", np.mean(np.max(var_reduce, axis=1)))
 print("\n")
 
 #selection = cvx.Variable((5,5),boolean=True)
-selection = cvx.Variable((5),boolean=True)
+selection = cvx.Variable((5))
 max_val = cvx.Variable(num_samps)
 
 constraint_1 = sum(selection) <= N #selection*np.array([budget for i in range(5)]) <= budget
+constraint_2 = selection >= 0 #coordinator can't incentivize power consumption
 
 constraints = []
 for i in range(num_samps):
@@ -47,7 +48,7 @@ for i in range(num_samps):
 utility = (1.0/float(num_samps))*sum(max_val) #need to repeat selection so that all 2000
                                           #max val terms get every j'th item reduced by budget
 
-problem = cvx.Problem(cvx.Minimize(utility), [constraint_1] + constraints)
+problem = cvx.Problem(cvx.Minimize(utility), [constraint_1, constraint_2] + constraints)
 
 problem.solve(solver=cvx.ECOS_BB)
 
